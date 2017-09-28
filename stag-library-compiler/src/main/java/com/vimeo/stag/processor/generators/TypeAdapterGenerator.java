@@ -253,7 +253,8 @@ public class TypeAdapterGenerator extends AdapterGenerator {
                         "();\n" +
                         "\twhile (reader.hasNext()) {\n" +
                         "\t\tString name = reader.nextName();\n" +
-                        "\t\tswitch (name) {\n");
+                        "\ttry{\n" +
+                        "\t\t\tswitch (name) {\n");
 
         final List<FieldAccessor> nonNullFields = new ArrayList<>();
 
@@ -263,12 +264,12 @@ public class TypeAdapterGenerator extends AdapterGenerator {
 
             final TypeMirror elementValue = element.getValue();
 
-            builder.addCode("\t\t\tcase \"" + name + "\":\n");
+            builder.addCode("\t\t\t\tcase \"" + name + "\":\n");
 
             String[] alternateJsonNames = fieldAccessor.getAlternateJsonNames();
             if (alternateJsonNames != null && alternateJsonNames.length > 0) {
                 for (String alternateJsonName : alternateJsonNames) {
-                    builder.addCode("\t\t\tcase \"" + alternateJsonName + "\":\n");
+                    builder.addCode("\t\t\t\tcase \"" + alternateJsonName + "\":\n");
                 }
             }
 
@@ -276,17 +277,17 @@ public class TypeAdapterGenerator extends AdapterGenerator {
             boolean isPrimitive = TypeUtils.isSupportedPrimitive(variableType);
 
             if (isPrimitive) {
-                builder.addCode("\t\t\t\tobject." +
+                builder.addCode("\t\t\t\t\tobject." +
                         fieldAccessor.createSetterCode(adapterFieldInfo.getAdapterAccessor(elementValue, name) +
                                 ".read(reader, object." + fieldAccessor.createGetterCode() + ")") + ";");
 
             } else {
-                builder.addCode("\t\t\t\tobject." + fieldAccessor.createSetterCode(adapterFieldInfo.getAdapterAccessor(elementValue, name) +
+                builder.addCode("\t\t\t\t\tobject." + fieldAccessor.createSetterCode(adapterFieldInfo.getAdapterAccessor(elementValue, name) +
                         ".read(reader)") + ";");
             }
 
 
-            builder.addCode("\n\t\t\t\tbreak;\n");
+            builder.addCode("\n\t\t\t\t\tbreak;\n");
             if (fieldAccessor.doesRequireNotNull()) {
                 if (!TypeUtils.isSupportedPrimitive(elementValue.toString())) {
                     nonNullFields.add(fieldAccessor);
@@ -294,9 +295,12 @@ public class TypeAdapterGenerator extends AdapterGenerator {
             }
         }
 
-        builder.addCode("\t\t\tdefault:\n" +
-                        "\t\t\t\treader.skipValue();\n" +
-                        "\t\t\t\tbreak;\n" +
+        builder.addCode("\t\t\t\tdefault:\n" +
+                        "\t\t\t\t\treader.skipValue();\n" +
+                        "\t\t\t\t\tbreak;\n" +
+                        "\t\t\t}\n" +
+                        "\t\t} catch (Exception ignored){\n" +
+                        "\t\t\tignored.printStackTrace();\n" +
                         "\t\t}\n" +
                         "\t}\n" +
                         '\n' +
