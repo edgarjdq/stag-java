@@ -300,7 +300,7 @@ public class TypeAdapterGenerator extends AdapterGenerator {
                         "\t\t\t\t\tbreak;\n" +
                         "\t\t\t}\n" +
                         "\t\t} catch (Exception ignored){\n" +
-                        "\t\t\treader.nextString();\n" +
+                        "\t\t\treader.skipValue();\n" +
                         "\t\t\tignored.printStackTrace();\n" +
                         "\t\t}\n" +
                         "\t}\n" +
