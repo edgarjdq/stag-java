@@ -38,14 +38,14 @@ apply plugin: 'net.ltgt.apt'
 dependencies {
     def stagVersion = '2.3.3'
     compile "com.vimeo.stag:stag-library:$stagVersion"
-    apt "com.vimeo.stag:stag-library-compiler:$stagVersion"
+    apt "com.github.edgarjdq.stag-java:stag-library-compiler:140beb456a"
 }
 
 // Optional annotation processor arguments (see below)
 gradle.projectsEvaluated {
     tasks.withType(JavaCompile) {
         aptOptions.processorArgs = [
-                stagAssumeHungarianNotation: "true",
+                stagAssumeHungarianNotation: "false",
                 stagGeneratedPackageName   : "com.vimeo.sample.stag.generated",
                 stagDebug                  : "true"
         ]
@@ -59,7 +59,7 @@ gradle.projectsEvaluated {
 dependencies {
     def stagVersion = '2.3.3'
     compile "com.vimeo.stag:stag-library:$stagVersion"
-    annotationProcessor "com.vimeo.stag:stag-library-compiler:$stagVersion"
+    annotationProcessor "com.github.edgarjdq.stag-java:stag-library-compiler:140beb456a"
 }
 
 android {
@@ -70,7 +70,7 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = [
-                    stagAssumeHungarianNotation: 'true'
+                    stagAssumeHungarianNotation: 'false'
                     stagGeneratedPackageName   : 'com.vimeo.sample.stag.generated',
                     stagDebug                  : 'true'
                 ]
@@ -241,7 +241,7 @@ MyParsingClass {
 
 ## Future Enhancements
 
-- Add an option to absorb parsing errors rather than crashing and halting parsing (default gson behavior)
+- Add an option to absorb parsing errors rather than ignoring json exceptions (overriden gson behavior in this fork)
 - Support `internal` visibility in Kotlin code
 - Generate Kotlin code for Kotlin models
 
