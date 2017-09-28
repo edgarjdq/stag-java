@@ -253,7 +253,7 @@ public class TypeAdapterGenerator extends AdapterGenerator {
                         "();\n" +
                         "\twhile (reader.hasNext()) {\n" +
                         "\t\tString name = reader.nextName();\n" +
-                        "\ttry{\n" +
+                        "\t\ttry {\n" +
                         "\t\t\tswitch (name) {\n");
 
         final List<FieldAccessor> nonNullFields = new ArrayList<>();
@@ -300,6 +300,7 @@ public class TypeAdapterGenerator extends AdapterGenerator {
                         "\t\t\t\t\tbreak;\n" +
                         "\t\t\t}\n" +
                         "\t\t} catch (Exception ignored){\n" +
+                        "\t\t\treader.nextString();\n" +
                         "\t\t\tignored.printStackTrace();\n" +
                         "\t\t}\n" +
                         "\t}\n" +
